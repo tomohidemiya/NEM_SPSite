@@ -1,5 +1,5 @@
 {
-  "name": "xembook-respect",
+  "name": "nem-authn",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.13.3",
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vuetify": "^2.3.21"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -1,38 +1,21 @@
 import Vue from "vue";
-import createAuth0Client from "@auth0/auth0-spa-js";
-
-/** Define a default action to perform after authentication */
-const DEFAULT_REDIRECT_CALLBACK = () =>
-  window.history.replaceState({}, document.title, window.location.pathname);
 
 let instance;
 
-/** Returns the current instance of the SDK */
 export const getInstance = () => instance;
 
-/** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
-export const useAuth0 = ({
-  onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
-  redirectUri = window.location.origin + '/' + window.location.pathname.split('/')[1],
-  ...options
-}) => {
+export const useNem = (address, ...options) => {
   if (instance) return instance;
 
-  // The 'instance' is simply a Vue object
   instance = new Vue({
     data() {
       return {
         loading: true,
-        isAuthenticated: false,
-        user: {},
-        auth0Client: null,
-        popupOpen: false,
         error: null
       };
     },
     methods: {
-      /** Authenticates the user using a popup window */
-      async loginWithPopup(options, config) {
+      async getMosaics(namespace) {
         this.popupOpen = true;
 
         try {
@@ -110,7 +93,6 @@ export const useAuth0 = ({
         // Initialize our internal authentication state
         this.isAuthenticated = await this.auth0Client.isAuthenticated();
         this.user = await this.auth0Client.getUser();
-        console.log(this.user);
         this.loading = false;
       }
     }
@@ -122,7 +104,6 @@ export const useAuth0 = ({
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
   install(Vue, options) {
-    console.log(options)
     Vue.prototype.$auth = useAuth0(options);
   }
 };
