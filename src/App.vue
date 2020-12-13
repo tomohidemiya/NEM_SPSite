@@ -11,7 +11,7 @@
       <v-btn text v-if="!$auth.isAuthenticated" @click="login">Log in</v-btn>
       <v-btn text v-if="$auth.isAuthenticated" @click="logout">Log out</v-btn>
       <v-btn text to="/signup">SignUp</v-btn>
-      <v-btn text href="/enterprise" target="_blank">About</v-btn>
+      <v-btn text href="https://t-miya19890131.medium.com/nem-authn-%E6%9A%97%E5%8F%B7%E8%B3%87%E7%94%A3%E3%81%AE%E6%89%80%E6%9C%89%E6%A8%A9%E3%81%A7%E8%AA%8D%E8%A8%BC%E3%81%99%E3%82%8Bidp%E3%81%AE%E3%82%B3%E3%83%B3%E3%82%BB%E3%83%97%E3%83%88%E3%81%A8%E3%83%97%E3%83%AD%E3%83%88%E3%82%BF%E3%82%A4%E3%83%97-1819ea9e08d2" target="_blank">About</v-btn>
     </v-app-bar>
 
     <v-main>
