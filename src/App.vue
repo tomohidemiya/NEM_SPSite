@@ -6,6 +6,7 @@
         <router-link to="/" class="toolbar__top v-toolbar__content">NEM Authn Prototype</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn text to='/'>Home</v-btn>
       <v-btn text v-if="!$auth.isAuthenticated" @click="login">Log in</v-btn>
       <v-btn text v-if="$auth.isAuthenticated" @click="logout">Log out</v-btn>
       <v-btn text to="/signup">SignUp</v-btn>
@@ -14,25 +15,65 @@
 
     <v-main>
       <v-container fluid>
-        <router-view />
+        <loading v-show="loading" />
+        <router-view v-show="!loading" />
       </v-container>
       <v-footer app>
-        <div>ツイベガ君 & みやとも</div>
+        <div style="margin: 0 auto;">ツイベガ君 & みやとも</div>
       </v-footer>
     </v-main>
-
-
   </v-app>
 
 </template>
 
 <script>
+
+import Loading from './components/container/Loading.vue';
+
 export default {
   data(){
     return{
-      drawer: null
+      drawer: null,
+      loading: false,
+      mosaicImgUrls: [],
     }
   },
+
+  watch: {
+    '$auth.user': {
+      immediate: true,
+      handler: async function (val) {
+        if (val && this.$auth.isAuthenticated) {
+          this.loading = true;
+          const gotMosaics = [];
+          const promises = [];
+          try {
+            const namespaces = await this.$nem.getOwnedMosaics(this.$auth.user.nickname);
+            for (const ns of namespaces) {
+              if (gotMosaics.includes(ns.mosaicId.namespaceId)) {
+                gotMosaics.push(ns.mosaicId.namespaceId);
+                promises.push(this.$nem.getMosaicDetail(ns.mosaicId.namespaceId));
+              }
+            }
+            const mosaics = await Promise.all(promises);
+            this.mosaicImgUrls = mosaics.filter(i => i.imageUrl).map(i => i.imageUrl);
+
+          } catch(e) {
+            throw new Error(e)
+          } finally {
+            this.loading = false;
+          }
+        }
+      }
+    },
+    mosaicImgUrls: {
+      immediate: true,
+      handler: async function () {
+        console.log(this.mosaicImgUrls)
+      }
+    }
+  },
+
   methods: {
     login() {
       this.$auth.loginWithRedirect();
@@ -42,6 +83,9 @@ export default {
         returnTo: window.location.origin + '/' + window.location.pathname.split('/')[1]
       });
     }
+  },
+  components: {
+    Loading,
   }
 }
 </script>

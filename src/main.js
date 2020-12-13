@@ -8,6 +8,7 @@ import { domain, clientId } from "../auth_config.json";
 
 // Import the plugin here
 import { Auth0Plugin } from "./auth";
+import { NemPlugin } from "./plugins/nem";
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
@@ -21,6 +22,8 @@ Vue.use(Auth0Plugin, {
     );
   }
 });
+
+Vue.use(NemPlugin);
 
 Vue.config.productionTip = false;
 

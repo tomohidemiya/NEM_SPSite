@@ -110,7 +110,6 @@ export const useAuth0 = ({
         // Initialize our internal authentication state
         this.isAuthenticated = await this.auth0Client.isAuthenticated();
         this.user = await this.auth0Client.getUser();
-        console.log(this.user);
         this.loading = false;
       }
     }
@@ -122,7 +121,6 @@ export const useAuth0 = ({
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
   install(Vue, options) {
-    console.log(options)
     Vue.prototype.$auth = useAuth0(options);
   }
 };
