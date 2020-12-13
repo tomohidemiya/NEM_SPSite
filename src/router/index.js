@@ -17,9 +17,9 @@ const routes = [
     component: Signup
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    name: 'notFound',
+    path: '*',
+    redirect: { name: 'Home' }
   }
 ]
 
