@@ -1,31 +1,23 @@
 <template>
-  <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
-    <div class="box">
-      <a href="#" data-toggle="modal" data-target="#1">
-        <img v-bind:src="mosaicImgSrc" />
-      </a>
-      <div class="modal fade" id="1" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-            <div class="modal-body">
-              <img v-bind:src="mosaicImgSrc" />
-            </div>
-            <div class="col-md-12 description">
-              <h4>{{imgName}} by {{imgBy}}</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<span>
+  <v-img
+    :src="imgSrc"
+    aspect-ratio="1"
+    class="grey lighten-2"
+  >
+    <template v-slot:placeholder>
+      <v-row
+        class="fill-height ma-0"
+        align="center"
+        justify="center"
+      >
+        <v-progress-circular
+          indeterminate
+          color="grey lighten-5"
+        ></v-progress-circular>
+      </v-row>
+    </template>
+  </v-img>
 </template>
 
 <script>
@@ -35,7 +27,7 @@ export default {
     imgSrc: String,
     imgName: String,
     imgBy: String
-  }
+  },
 };
 </script>
 

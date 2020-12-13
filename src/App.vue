@@ -1,12 +1,13 @@
 <template>
   <v-app>
-
     <v-app-bar color="primary" dark app clipped-left>
       <v-toolbar-title>
-        <router-link to="/" class="toolbar__top v-toolbar__content">NEM Authn Prototype</router-link>
+        <router-link to="/" class="toolbar__top v-toolbar__content"
+          >NEM Authn Prototype</router-link
+        >
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text to='/'>Home</v-btn>
+      <v-btn text to="/">Home</v-btn>
       <v-btn text v-if="!$auth.isAuthenticated" @click="login">Log in</v-btn>
       <v-btn text v-if="$auth.isAuthenticated" @click="logout">Log out</v-btn>
       <v-btn text to="/signup">SignUp</v-btn>
@@ -16,31 +17,30 @@
     <v-main>
       <v-container fluid>
         <loading v-show="loading" />
-        <router-view v-show="!loading" />
+        <router-view v-show="!loading" v-bind:data="oaMosaics" />
+
       </v-container>
       <v-footer app>
-        <div style="margin: 0 auto;">ツイベガ君 & みやとも</div>
+        <div style="margin: 0 auto">ツイベガ君 & みやとも</div>
       </v-footer>
     </v-main>
   </v-app>
-
 </template>
 
 <script>
-
-import Loading from './components/container/Loading.vue';
+import Loading from "./components/container/Loading.vue";
 
 export default {
-  data(){
-    return{
+  data() {
+    return {
       drawer: null,
       loading: false,
-      mosaicImgUrls: [],
-    }
+      oaMosaics: [],
+    };
   },
 
   watch: {
-    '$auth.user': {
+    "$auth.user": {
       immediate: true,
       handler: async function (val) {
         if (val && this.$auth.isAuthenticated) {
@@ -48,29 +48,44 @@ export default {
           const gotMosaics = [];
           const promises = [];
           try {
-            const namespaces = await this.$nem.getOwnedMosaics(this.$auth.user.nickname);
+            const namespaces = await this.$nem.getOwnedMosaics(
+              this.$auth.user.nickname
+            );
+            console.log(namespaces);
             for (const ns of namespaces) {
-              if (gotMosaics.includes(ns.mosaicId.namespaceId)) {
+              if (!gotMosaics.includes(ns.mosaicId.namespaceId)) {
                 gotMosaics.push(ns.mosaicId.namespaceId);
-                promises.push(this.$nem.getMosaicDetail(ns.mosaicId.namespaceId));
+                promises.push(
+                  this.$nem.getMosaicDetail(ns.mosaicId.namespaceId)
+                );
               }
             }
-            const mosaics = await Promise.all(promises);
-            this.mosaicImgUrls = mosaics.filter(i => i.imageUrl).map(i => i.imageUrl);
 
-          } catch(e) {
-            throw new Error(e)
+            let mosaics = await Promise.all(promises);
+            mosaics = mosaics
+              .flat(2)
+              .filter((i) => i.imageUrl && i.imageUrl !== "")
+              .map((i) => ({
+                imageUrl: i.imageUrl,
+                name: i.mosaic.id.name,
+                namespaceId: i.mosaic.id.namespaceId,
+              }));
+            console.log(mosaics);
+            this.oaMosaics = namespaces.map((n) => {
+              const tmp = mosaics.find(
+                (m) =>
+                  m.name === n.mosaicId.name &&
+                  m.namespaceId === n.mosaicId.namespaceId
+              );
+              return { quantity: n.quantity, ...tmp };
+            }).filter(i => i.imageUrl);
+          } catch (e) {
+            throw new Error(e);
           } finally {
             this.loading = false;
           }
         }
-      }
-    },
-    mosaicImgUrls: {
-      immediate: true,
-      handler: async function () {
-        console.log(this.mosaicImgUrls)
-      }
+      },
     }
   },
 
@@ -80,14 +95,15 @@ export default {
     },
     logout() {
       this.$auth.logout({
-        returnTo: window.location.origin + '/' + window.location.pathname.split('/')[1]
+        returnTo:
+          window.location.origin + "/" + window.location.pathname.split("/")[1],
       });
-    }
+    },
   },
   components: {
     Loading,
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -115,6 +131,4 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
-
-
 </style>

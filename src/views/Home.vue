@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld/>
+    <HelloWorld :data="data" />
   </div>
 </template>
 
@@ -11,6 +11,11 @@ import HelloWorld from '@/components/container/HelloWorld.vue'
 
 export default {
   name: "home",
+  props: {
+    data: {
+      type: Array,
+    }
+  },
   components: {
     HelloWorld,
   }

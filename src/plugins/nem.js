@@ -3,9 +3,17 @@ import * as axios from "axios";
 
 let instance;
 const nisBaseUrl = "https://snnode.supernode.me:7891";
-const oaImageBaseUrl = "https://s3.amazonaws.com/open-apostille-nemgallary-production/";
+const oaImageBaseUrl =
+  "https://s3.amazonaws.com/open-apostille-nemgallary-production/";
 
 export const getInstance = () => instance;
+
+export const hex2msg = function(hex) {
+  let msg = "";
+  for (let i = 0; i < hex.length; i += 2)
+    msg += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return msg;
+};
 
 export const useNem = () => {
   if (instance) return instance;
@@ -17,7 +25,10 @@ export const useNem = () => {
           .get(`${nisBaseUrl}/account/mosaic/owned?address=${address}`)
           .then((res) => {
             return res.data.data.filter(
-              (item) => item.quantity > 0 && item.mosaicId.namespaceId !== "nem"
+              (item) =>
+                item.quantity > 0 &&
+                item.mosaicId.namespaceId !== "nem" &&
+                item.mosaicId.name !== "xem"
             );
           });
       },
@@ -27,14 +38,14 @@ export const useNem = () => {
           .get(
             `${nisBaseUrl}/namespace/mosaic/definition/page?pageSize=50&namespace=${namespace}`
           )
-          .then((data) => {
-            data.data = data.data.map(
-              (item) => {
-                item.imageUrl = item.mosaic.description.startsWith('oa:') ? oaImageBaseUrl + item.mosaic.description.slice(3) : ''
-                return item
-              }
-            );
-            return data;
+          .then((res) => {
+            res.data.data = res.data.data.map((item) => {
+              item.imageUrl = item.mosaic.description.startsWith("oa:")
+                ? oaImageBaseUrl + item.mosaic.description.slice(3) + ".jpg"
+                : "";
+              return item;
+            });
+            return res.data.data;
           });
       },
     },
