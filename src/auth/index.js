@@ -1,11 +1,13 @@
 import Vue from "vue";
 import createAuth0Client from "@auth0/auth0-spa-js";
+import * as auth0 from "auth0-js";
 
 /** Define a default action to perform after authentication */
 const DEFAULT_REDIRECT_CALLBACK = () =>
   window.history.replaceState({}, document.title, window.location.pathname);
 
 let instance;
+let webAuth;
 
 /** Returns the current instance of the SDK */
 export const getInstance = () => instance;
@@ -16,6 +18,12 @@ export const useAuth0 = ({
   redirectUri = window.location.origin + '/' + window.location.pathname.split('/')[1],
   ...options
 }) => {
+  if (!webAuth) {
+    webAuth = new auth0.WebAuth({
+      domain: options.domain,
+      clientID: options.clientId
+    });
+  }
   if (instance) return instance;
 
   // The 'instance' is simply a Vue object
@@ -31,6 +39,18 @@ export const useAuth0 = ({
       };
     },
     methods: {
+      async signup(username, pubKey) {
+        webAuth.signup({
+          connection: 'Symbol',
+          email: `${username}@nem.io`,
+          username: username,
+          password: pubKey,
+          nickname: username,
+        }, function (err) {
+            if (err) return alert('Something went wrong: ' + err.message);
+            return 
+        });
+      },
       /** Authenticates the user using a popup window */
       async loginWithPopup(options, config) {
         this.popupOpen = true;
