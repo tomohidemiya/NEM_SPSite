@@ -1,12 +1,40 @@
 <template>
   <div class="signup">
     <div>
-      <p>Signupは現在開発中です。<br>
-      アカウント追加をご希望の方は、ツイベガかみやともまでDMをいただけると嬉しいです。</p>
-
-      <h3>Contact</h3>
-      <p><a href="https://twitter.com/tuibegakun" target="_blank" rel="noopener">ツイベガ君</a></p>
-      <p><a href="https://twitter.com/miyatomo_38" target="_blank" rel="noopener">みやとも</a></p>
+      <QRCode :qrSrc="hash" />
     </div>
+    <v-btn
+      @click="
+        $auth.signup('1234567890123456789012345678901234567890', '3810Moh!de')
+      "
+      >サインアップ</v-btn
+    >
   </div>
 </template>
+
+<script>
+import QRCode from "@/components/presantation/QRCode.vue";
+import { v4 } from "uuid";
+
+export default {
+  name: "signup",
+  components: {
+    QRCode,
+  },
+  computed: {
+    hash: function () {
+      const hash = {
+        v: 2,
+        type: 2,
+        data: {
+          addr: 'NASBB7-5LTFBJ-2J7ZGU-EE276C-ZZUTMZ-6VEZPV-PBLP',
+          amount: 0,
+          msg: `signup: ${v4()}`,
+        },
+      };
+      console.log(encodeURI(JSON.stringify(hash)))
+      return encodeURI(JSON.stringify(hash));
+    },
+  },
+};
+</script>

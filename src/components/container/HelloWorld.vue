@@ -6,7 +6,8 @@
     </p>
     <h3>Summary</h3>
     <div>
-      NEM AuthnはNEMの請求書によるうんぬんかんぬん。ピーヒャララ
+      NEM Authnは、NEMのトランザクションを使ってログインが出来る認証基盤です。<br />
+      トランザクションを発生させることにより、NEMアカウントの秘密鍵の所有権から本人確認を行います。
     </div>
     
     <div v-if="data.length > 0" style="margin-top: 16px">
