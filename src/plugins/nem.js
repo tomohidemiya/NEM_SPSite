@@ -20,6 +20,13 @@ export const useNem = () => {
 
   instance = new Vue({
     methods: {
+      async getAccountInfo(address) {
+        return axios
+          .get(`${nisBaseUrl}/account/get?address=${address}`)
+          .then((res) => {
+            return res.data.data;
+          });
+      },
       async getOwnedMosaics(address) {
         return axios
           .get(`${nisBaseUrl}/account/mosaic/owned?address=${address}`)

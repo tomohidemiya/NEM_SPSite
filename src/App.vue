@@ -70,7 +70,6 @@ export default {
                 name: i.mosaic.id.name,
                 namespaceId: i.mosaic.id.namespaceId,
               }));
-            console.log(mosaics);
             this.oaMosaics = namespaces.map((n) => {
               const tmp = mosaics.find(
                 (m) =>
